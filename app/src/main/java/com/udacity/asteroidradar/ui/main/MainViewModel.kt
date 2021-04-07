@@ -42,7 +42,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
                 _pictureOfDay.value = asteroidsRepository.getPictureOfDay()
             } catch (e: Exception) {
                 e.message?.let {
-                    Log.e("RAMIRO", it)
+                    Log.e(MainViewModel::class.java.simpleName, it)
                 }
             }
         }
@@ -52,13 +52,6 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         viewModelScope.launch {
             try {
                 asteroidsRepository.refreshAsteroids()
-//                _eventNetworkError.value = false
-//                _isNetworkErrorShown.value = false
-
-//            } catch (networkError: IOException) {
-                // Show a Toast error message and hide the progress bar.
-//                if(playlist.value.isNullOrEmpty())
-//                    _eventNetworkError.value = true
             } catch (e: Exception) {
                 e.printStackTrace()
             }

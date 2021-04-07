@@ -10,6 +10,7 @@ import com.udacity.asteroidradar.data.network.AsteroidApi
 import com.udacity.asteroidradar.data.network.PictureOfDay
 import com.udacity.asteroidradar.domain.Asteroid
 import com.udacity.asteroidradar.domain.asDatabaseModel
+import com.udacity.asteroidradar.utils.Constants
 import com.udacity.asteroidradar.utils.getCurrentDate
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -22,7 +23,7 @@ import java.util.*
 
 class AsteroidsRepository(private val database: AsteroidRadarDatabase) {
 
-    val apiKeyGlobal = "F6eDwdePWgH3WqM5GVl72RT7oevaiat2D97eEi8N"
+
 
     val asteroids: LiveData<List<Asteroid>> = Transformations.map(
         database.asteroidDao.getRelevantAsteroids(
@@ -32,7 +33,7 @@ class AsteroidsRepository(private val database: AsteroidRadarDatabase) {
         it.asDomainModel()
     }
 
-    suspend fun getPictureOfDay() = AsteroidApi.retrofitService.getApod(apiKeyGlobal)
+    suspend fun getPictureOfDay() = AsteroidApi.retrofitService.getApod(Constants.API_KEY)
 
     private val refreshAsteroidsCallback = object : Callback<String> {
         override fun onResponse(call: Call<String>, response: Response<String>) {
@@ -56,18 +57,16 @@ class AsteroidsRepository(private val database: AsteroidRadarDatabase) {
     }
 
     fun refreshAsteroids() {
-        val apiKey = "F6eDwdePWgH3WqM5GVl72RT7oevaiat2D97eEi8N"
         val startDate = Calendar.getInstance().getCurrentDate("yyyy-MM-dd")
 
-        AsteroidApi.retrofitService.getAsteroids(startDate, null, apiKey)
+        AsteroidApi.retrofitService.getAsteroids(startDate, null, Constants.API_KEY)
             .enqueue(refreshAsteroidsCallback)
     }
 
     fun refreshTodayAsteroids() {
-        val apiKey = "F6eDwdePWgH3WqM5GVl72RT7oevaiat2D97eEi8N"
         val startDate = Calendar.getInstance().getCurrentDate("yyyy-MM-dd")
 
-        AsteroidApi.retrofitService.getAsteroids(startDate, startDate, apiKey)
+        AsteroidApi.retrofitService.getAsteroids(startDate, startDate, Constants.API_KEY)
             .enqueue(refreshAsteroidsCallback)
     }
 }
